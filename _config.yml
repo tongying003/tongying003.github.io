@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 童小应的日志
+title: 一杯拿铁
 subtitle: 'Enjoy coding'
-description: '笔记&博客'
+description: '记录，思考并解决问题'
 keywords: Java
 author: TongYing
 language: zh-CN
@@ -100,6 +100,12 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: next
 
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+  content: true
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
