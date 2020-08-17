@@ -164,16 +164,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isfetched) return;
     const searchText = input.value.trim().toLowerCase();
     const keywords = searchText.split(/[-\s]+/);
-    const resultContent = document.getElementById('search-result');
+    const resultContent = document.querySelector('.search-result-container');
     let resultItems = [];
     if (searchText.length > 0) {
       // Perform local searching
       resultItems = getResultItems(keywords);
     }
     if (keywords.length === 1 && keywords[0] === '') {
-      resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>';
+      resultContent.innerHTML = '<div class="no-result"><i class="fa fa-search fa-5x"></i></div>';
     } else if (resultItems.length === 0) {
-      resultContent.innerHTML = '<div id="no-result"><i class="far fa-frown fa-5x"></i></div>';
+      resultContent.innerHTML = '<div class="no-result"><i class="far fa-frown fa-5x"></i></div>';
     } else {
       resultItems.sort((left, right) => {
         if (left.includedCount !== right.includedCount) {
