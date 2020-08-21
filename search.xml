@@ -5,6 +5,7 @@
     <url>/2020/08/17/Spring-Boot%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<h1 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h1><p>每个功能元素最终都是一个可独立替换和独立升级的软件单元。</p>
 <p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013324.png" alt="20200518121536"></p>
+<a id="more"></a>
 <h1 id="Hello-World探究"><a href="#Hello-World探究" class="headerlink" title="Hello World探究"></a>Hello World探究</h1><p>认识一下SpringBoot的版本仲裁与场景启动器。</p>
 <h2 id="POM文件"><a href="#POM文件" class="headerlink" title="POM文件"></a>POM文件</h2><h3 id="父项目"><a href="#父项目" class="headerlink" title="父项目"></a>父项目</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -56,7 +57,9 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">application.properties</span><br><span class="line">application.yml</span><br></pre></td></tr></table></figure>
 
 <p>配置文件的作用：修改Spring Boot自动配置的默认值。</p>
-<p><code>.yml</code>是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件</p>
+<p><code>.yml</code>是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件。</p>
+<a id="more"></a>
+
 <h1 id="YAML语法"><a href="#YAML语法" class="headerlink" title="YAML语法"></a>YAML语法</h1><h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><ul>
 <li><p>使用缩进表示层级关系</p>
 </li>
