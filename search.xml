@@ -1,34 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2020/08/17/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+    <title>Spring Boot入门</title>
+    <url>/2020/08/17/Spring-Boot%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h1><p>每个功能元素最终都是一个可独立替换和独立升级的软件单元。</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013324.png" alt="20200518121536"></p>
+<h1 id="Hello-World探究"><a href="#Hello-World探究" class="headerlink" title="Hello World探究"></a>Hello World探究</h1><p>认识一下SpringBoot的版本仲裁与场景启动器。</p>
+<h2 id="POM文件"><a href="#POM文件" class="headerlink" title="POM文件"></a>POM文件</h2><h3 id="父项目"><a href="#父项目" class="headerlink" title="父项目"></a>父项目</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>它的父项目是：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">relativePath</span>&gt;</span>../../spring-boot-dependencies<span class="tag">&lt;/<span class="name">relativePath</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>由该项目来真正管理Spring Boot应用里面的所有依赖版本。可以称为Spring Boot版本仲裁中心，对于在其dependencies里面管理的依赖，我们在导入时不再需要写版本号。</p>
+<h3 id="导入的依赖"><a href="#导入的依赖" class="headerlink" title="导入的依赖"></a>导入的依赖</h3><figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p><strong>spring-boot-starter-web</strong></p>
+<p>Spring Boot场景启动器，帮助我们导入了web模块正常运行所依赖的组件。</p>
+<p>Spring Boot将所有的功能场景都抽取出来，做成一个个的starter（启动器），只需要在项目里引入这些starter，相关场景的所有依赖都会导入进来，可以根据场景选择导入相应的启动器。</p>
+<h2 id="主程序类"><a href="#主程序类" class="headerlink" title="主程序类"></a>主程序类</h2><p><strong>@SpringBootApplication</strong></p>
+<p>Spring Boot应用标注在某个类上说明这个类是Spring Boot的主配置类，Spring Boot就应该运行这个类的main方法来启动SpringBoot应用。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@SpringBootConfiguration</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span></span><br><span class="line"><span class="meta">@ComponentScan(</span></span><br><span class="line"><span class="meta">    excludeFilters = &#123;@Filter(</span></span><br><span class="line"><span class="meta">    type = FilterType.CUSTOM,</span></span><br><span class="line"><span class="meta">    classes = &#123;TypeExcludeFilter.class&#125;</span></span><br><span class="line"><span class="meta">), @Filter(</span></span><br><span class="line"><span class="meta">    type = FilterType.CUSTOM,</span></span><br><span class="line"><span class="meta">    classes = &#123;AutoConfigurationExcludeFilter.class&#125;</span></span><br><span class="line"><span class="meta">)&#125;</span></span><br><span class="line"><span class="meta">)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootApplication &#123;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p><strong>@SpringBootConfiguration</strong></p>
+<p>标注在某个类上，表示这是一个Spring Boot的配置类。其底层是<code>@Configuration</code>，用来标注一个配置类，配置类也是容器中的一个组件<code>@Component</code></p>
+<p><strong>@EnableAutoConfiguration</strong></p>
+<p>该注解告诉Spring Boot开启自动配置功能，由Spring Boot帮我们进行自动配置。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AutoConfigurationPackage</span></span><br><span class="line"><span class="meta">@Import(&#123;AutoConfigurationImportSelector.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAutoConfiguration &#123;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>@AutoConfigurationPackage</strong></p>
+<p>将主配置类（@SpringBootApplication标注的类）所在的包及下面所有子包里里面的所有组件扫描到Spring容器。底层是<code>@Import(&#123;Registrar.class&#125;)</code>，Spring的底层注解@Impo给容器中导入一个组件，导入的组件由<code>&#123;Registrar.class&#125;</code>获取。</p>
+<p><strong>@Import({AutoConfigurationImportSelector.class})</strong></p>
+<p>导入哪些组件的选择器，将所有需要导入的组件以全类名的方式返回，这些组件就会被添加到容器中。</p>
+<p>会给容器中导入非常多的自动配置类（<code>xxxAutoConfiguration</code>）；就是给容器中导入这个场景需要的所有组件，并配置好这些组件。 </p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013205.png" alt="20200518191037"></p>
+<p>有了自动配置类，免去了我们手动编写配置注入功能组件等的工作。其底层调用了</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">SpringFactoriesLoader.loadFactoryNames(EnableAutoConfiguration.class, classLoader);</span><br></pre></td></tr></table></figure>
+
+<p>Spring Boot在启动时从类路径下的<code>META-INF/spring.factories</code> 中获取<code>EnableAutoConfiguration</code>指定的值，将这些值作为自动配置类导入到容器中，自动配置类就生效，帮我们进行自动配置工作。</p>
+<p>J2EE的整体解决方案和自动配置都在<code>spring-boot-autoconfigure-2.1.12.RELEASE.jar</code></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>测试文档</title>
-    <url>/2020/08/16/%E6%B5%8B%E8%AF%95%E6%96%87%E6%A1%A3/</url>
-    <content><![CDATA[]]></content>
       <categories>
-        <category>Java</category>
-        <category>Spring Boot</category>
+        <category>Spring Boot基础</category>
       </categories>
       <tags>
-        <tag>Java</tag>
         <tag>Spring Boot</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring Boot配置</title>
+    <url>/2020/08/21/Spring-Boot%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p> Spring Boot使用一个全局的配置文件，配置文件名是固定的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">application.properties</span><br><span class="line">application.yml</span><br></pre></td></tr></table></figure>
+
+<p>配置文件的作用：修改Spring Boot自动配置的默认值。</p>
+<p><code>.yml</code>是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件</p>
+<h1 id="YAML语法"><a href="#YAML语法" class="headerlink" title="YAML语法"></a>YAML语法</h1><h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><ul>
+<li><p>使用缩进表示层级关系</p>
+</li>
+<li><p>缩进时不允许使用Tab键，只允许只用空格</p>
+</li>
+<li><p>缩进的空格数目不重要，只要相同层级的元素左对齐即可</p>
+</li>
+<li><p>大小写敏感</p>
+</li>
+</ul>
+<h2 id="支持的数据结构"><a href="#支持的数据结构" class="headerlink" title="支持的数据结构"></a>支持的数据结构</h2><p><strong>对象（属性和值）：健值对的集合</strong></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">friends:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">tom</span></span><br><span class="line">    <span class="attr">age:</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
+
+<p>行内写法：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">friends:</span> &#123;<span class="attr">name:</span> <span class="string">tom</span>, <span class="attr">age:</span> <span class="number">20</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>数组（List、Set）：一组按次序排列的值</strong></p>
+<p>用<code>-值</code>表示数组中的一个元素</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">pets:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">cat</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">pig</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">dog</span></span><br></pre></td></tr></table></figure>
+
+<p>行内写法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">pets: [cat,pig,dog]        </span><br></pre></td></tr></table></figure>
+
+<p><strong>字面量（数字、字符串、布尔）：单个的、不可再分的值</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">k: v：字面直接写</span><br><span class="line"></span><br><span class="line">“”：双引号，会引起转义，如&quot;hello \n world&quot;输出为hello 换行 world。</span><br><span class="line"></span><br><span class="line">‘’：单引号，可以避免转义，如&#39;hello \n world&#39;输出为hello \n world</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="配置文件值注入"><a href="#配置文件值注入" class="headerlink" title="配置文件值注入"></a>配置文件值注入</h1><p><strong>配置文件：</strong></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">person:</span></span><br><span class="line">  <span class="attr">lastName:</span> <span class="string">tom</span></span><br><span class="line">  <span class="attr">age:</span> <span class="number">18</span></span><br><span class="line">  <span class="attr">birthDay:</span> <span class="number">2012</span><span class="string">/09/01</span></span><br><span class="line">  <span class="attr">info:</span> &#123;<span class="attr">height:</span> <span class="number">170</span>, <span class="attr">motto:</span> <span class="string">Good</span> <span class="string">morning!</span>&#125;</span><br><span class="line">  <span class="attr">friends:</span> [<span class="string">Anna</span>, <span class="string">Bella</span>, <span class="string">Coco</span>]</span><br><span class="line">  <span class="attr">dog:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">Cindy</span></span><br><span class="line">    <span class="attr">age:</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaBean</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Person类</span></span><br><span class="line"><span class="comment"> * 将配置文件中的值映射到当前组件中</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@ConfigurationProperties</span>： 告诉Spring Boot将本类中的属性和配置文件中相关的配置进行绑定</span></span><br><span class="line"><span class="comment"> * prefix = &quot;person&quot;：将配置文件中person下面的属性进行一一映射</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    String lastName;</span><br><span class="line">    Integer age;</span><br><span class="line">    Date birthDay;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, Object&gt; info;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Object&gt; friends;</span><br><span class="line">    <span class="keyword">private</span> Dog dog;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要导入配置文件处理器，以后编写配置就有提示了</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="properties配置文件编码问题"><a href="#properties配置文件编码问题" class="headerlink" title="properties配置文件编码问题"></a>properties配置文件编码问题</h1><p>Preferences -&gt; Editor -&gt; File Encodings，将编码方式改为UTF-8。</p>
+<p>设置后还乱码的话可以删除application.properties，再新建一个相同的。</p>
+<h1 id="ConfigurationProperties和-Value"><a href="#ConfigurationProperties和-Value" class="headerlink" title="@ConfigurationProperties和@Value"></a>@ConfigurationProperties和@Value</h1><table>
+<thead>
+<tr>
+<th>注解</th>
+<th><code>@ConfigurationProperties</code></th>
+<th><code>@Value</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>功能</td>
+<td>批量注入配置文件中的属性</td>
+<td>注入单个属性</td>
+</tr>
+<tr>
+<td>松散绑定（松散语法）</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>SpEL</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>JSR303数据校验</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>复杂类型封装（如map）</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<h1 id="PropertySource和-ImportResource"><a href="#PropertySource和-ImportResource" class="headerlink" title="@PropertySource和@ImportResource"></a>@PropertySource和@ImportResource</h1><p><strong>@PropertySource</strong></p>
+<p><code>@ConfigurationProperties</code>注解从配置文件中获取值，默认是全局配置文件，配合<code>@PropertySource</code>加载指定的配置文件。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@PropertySource(value = &#123;&quot;classpath:person.properties&quot;&#125;)</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>@ImportResource</strong></p>
+<p>导入Spring的配置文件，让配置文件里面的内容生效。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ImportResource(locations = &#123;&quot;classpath:beans.xml&quot;&#125;)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Spring Boot推荐给容器中添加组件的方式</strong></p>
+<p>Spring Boot推荐使用全注解的方式。</p>
+<p>例如：给容器中添加组件，可以使用配置类代替Spring的配置文件，使用<code>@Bean</code>给容器中添加组件。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@configuration</span>: 指明当前类是一个配置类，用来代替前面的Spring的配置文件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将方法的返回值添加到容器中，容器中这个组件的id就是方法名</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HelloService <span class="title">helloService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloService();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="配置文件占位符"><a href="#配置文件占位符" class="headerlink" title="配置文件占位符"></a>配置文件占位符</h1><p><strong>RandomValuePropertySource：</strong>配置文件中可以使用随机数</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">$&#123;random.value&#125;</span></span><br><span class="line"><span class="attr">$&#123;random.int&#125;</span></span><br><span class="line"><span class="attr">$&#123;random.int&#125;</span></span><br><span class="line"><span class="attr">$&#123;random.int(10)&#125;</span></span><br><span class="line"><span class="attr">$&#123;random.int[1024,65536]&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>属性配置占位符:</strong></p>
+<p>可以在配置文件中引用前面配置过的属性</p>
+<p>如果没有配置可以用<code>$&#123;app.name:默认值&#125;</code>的形式指定默认值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">app.name=MyApp</span><br><span class="line">app.description=&#123;app.name&#125; is a Spring Boot application</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Profile"><a href="#Profile" class="headerlink" title="Profile"></a>Profile</h1><p><strong>多profile文件支持：</strong></p>
+<p>在主配置文件编写的时候，文件名可是是application-{profile}.properties/yml</p>
+<p>默认使用application.properties的配置。</p>
+<p><strong>多profile文档块模式</strong></p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring</span>:<span class="string"></span></span><br><span class="line">  <span class="attr">profiles</span>:<span class="string"></span></span><br><span class="line">    <span class="attr">active</span>: <span class="string">dev</span></span><br><span class="line"><span class="attr">---</span></span><br><span class="line"><span class="attr">server</span>:<span class="string"></span></span><br><span class="line">  <span class="attr">port</span>: <span class="string">8081</span></span><br><span class="line"></span><br><span class="line"><span class="attr">---</span></span><br><span class="line"><span class="attr">server</span>:<span class="string"></span></span><br><span class="line">  <span class="attr">port</span>: <span class="string">8082</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>激活方式</strong></p>
+<ul>
+<li>在配置文件中指定</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">spring.profiles.active</span>=<span class="string">dev</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>命令行</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">--spring.profiles.active=dev</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>JVM参数</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Dspring.profiles.active=dev</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="配置文件的加载位置"><a href="#配置文件的加载位置" class="headerlink" title="配置文件的加载位置"></a>配置文件的加载位置</h1><p>Spring Boot启动会扫描以下位置的application.properties或者application.yml文件作为Spring Boot的默认配置文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-file: .&#x2F;config&#x2F;</span><br><span class="line">-file: .&#x2F;</span><br><span class="line">-classpath: &#x2F;config&#x2F;</span><br><span class="line">-classpath: &#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>优先级从高到低，高优先级配置内容会覆盖低优先级配置内容</p>
+<p>可以通过配置<code>spring.config.location</code>来改变默认配置文件位置，项目打包好以后，可以使用命令行参数的形式，在启动项目时指定配置文件的新位置，指定的和默认的配置文件会互补配置</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">--spring.config.location=xxx/application.properties</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="外部配置加载顺序"><a href="#外部配置加载顺序" class="headerlink" title="外部配置加载顺序"></a>外部配置加载顺序</h1><p>Spring Boot可以从以下位置加载配置，优先级从高到低，高优先级配置覆盖低优先级配置，所有的配置会形成互补配置。</p>
+<ul>
+<li>命令行参数</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">java -jar myProject.jar --server.port=8080 --server.context-path=/boot</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>来自java:comp/evn的JDNI属性</p>
+</li>
+<li><p>Java系统属性（<code>System.getProperties()</code>)</p>
+</li>
+<li><p>操作系统环境变量</p>
+</li>
+<li><p>RandomValuePropertySource配置的<code>random.*</code>属性值</p>
+</li>
+<li><p>jar包外部的application-{profile}.properties或application.yml（带<code>spring.profile</code>）配置文件</p>
+</li>
+<li><p>jar包内部的application-{profile}.properties或application.yml（带<code>spring.profile</code>）配置文件</p>
+</li>
+<li><p>jar包外部的application.properties或application.yml（不带<code>spring.profile</code>）配置文件</p>
+</li>
+<li><p>jar包内部的application.properties或application.yml（不带<code>spring.profile</code>）配置文件</p>
+</li>
+<li><p><code>@Configuration</code>注解类上的<code>@PropertySource</code></p>
+</li>
+<li><p>通过<code>SpringApplication.setDefaultProperties</code>指定的默认属性</p>
+</li>
+</ul>
+<h1 id="自动配置原理"><a href="#自动配置原理" class="headerlink" title="自动配置原理"></a>自动配置原理</h1><p><a href="https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/appendix-application-properties.html#common-application-properties">能配置的属性参照</a></p>
+<p>1.Spring Boot启动的时加载主配置类，开启了自动配置功能<code>@EnableAutoConfiguration</code></p>
+<p>2.<code>@EnableAutoConfiguration</code>的作用:</p>
+<p>(1)利用<code>AutoConfigurationImportSelector</code>给容器中导入一些组件</p>
+<p>(2)获取候选配置的关键方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; configurations = getCandidateConfigurations(annotationMetadata, attributes);</span><br></pre></td></tr></table></figure>
+
+<p>(3)该方法调用<code>SpringFactoriesLoader.loadFactoryNames()</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SpringFactoriesLoader.loadFactoryNames()</span></span><br><span class="line">扫描所有jar包类路径下META-INF/spring.factories，把扫描到的这些文件的内容包装成properties对象，从properties中取得EnableAutoConfiguration.class类名对应的值，然后把它们添加到容器中</span><br></pre></td></tr></table></figure>
+
+<p>(4)即将类路径<code>META-INF/spring.facories</code>里面配置的所有<code>EnableAutoConfiguration</code>的值加入到了容器中</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013640.png" alt="image-20200703203903550"></p>
+<p>每一个这样的xxxAutoConfiguration类都是容器中的一个组件，都加入到容器中，用他们来做自动配置；</p>
+<p>3.每一个自动配置类进行自动配置功能</p>
+<p>4.以HttpEncodingAutoConfiguration为例解释自动配置原理：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 表示这是一个配置类，也可以给容器中添加组件</span></span><br><span class="line"><span class="meta">@Configuration(proxyBeanMethods = false)</span></span><br><span class="line"><span class="comment">// 启用指定类的ConfigurationProperties功能，从配置文件中，将配置文件中对应的值和ServerProperties绑定起来，并把ServerProperties加入到IOC容器中</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties(ServerProperties.class)</span></span><br><span class="line"><span class="comment">// Spring底层@Conditional注解，如果满足指定的条件，整个配置类里的配置就会生效；这里是判断当前配置类在Web应用生效</span></span><br><span class="line"><span class="meta">@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)</span></span><br><span class="line"><span class="comment">// 判断当前项目有没有这个类，CharacterEncodingFilter是Spring MVC中解决乱码的过滤去</span></span><br><span class="line"><span class="meta">@ConditionalOnClass(CharacterEncodingFilter.class)</span></span><br><span class="line"><span class="comment">// 判断配置文件中是否存在某个配置server.servlet.encoding.enabled，matchIfMissing = true，如果不存在，判断也是成立的</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty(prefix = &quot;server.servlet.encoding&quot;, value = &quot;enabled&quot;, matchIfMissing = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpEncodingAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 它已经和Spring Boot的配置文件映射了</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Encoding properties;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 只有一个有参构造器的情况下，参数的值就会从容器中拿</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HttpEncodingAutoConfiguration</span><span class="params">(ServerProperties properties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.properties = properties.getServlet().getEncoding();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 给容器中添加一个组件，这个组件的某些值需要从properties中获取</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="comment">// 判断容器中不存在这个Bean</span></span><br><span class="line">    <span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterEncodingFilter <span class="title">characterEncodingFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        CharacterEncodingFilter filter = <span class="keyword">new</span> OrderedCharacterEncodingFilter();</span><br><span class="line">        filter.setEncoding(<span class="keyword">this</span>.properties.getCharset().name());</span><br><span class="line">        filter.setForceRequestEncoding(<span class="keyword">this</span>.properties.shouldForce(Encoding.Type.REQUEST));</span><br><span class="line">        filter.setForceResponseEncoding(<span class="keyword">this</span>.properties.shouldForce(Encoding.Type.RESPONSE));</span><br><span class="line">        <span class="keyword">return</span> filter;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据当前不同的条件判断，决定这个配置类是否生效。一旦这个配置类生效，这个配置类就会给容器中添加组件，这些组件的属性是从对应的properties类中获取的，这些类中的每一个属性又是和配置文件绑定的。</p>
+<p>5.所有能在配置文件中配置的属性都封装在xxxProperties类中，配置文件中能配置的属性就可以参照该功能对应的这个属性类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 从配置文件中获取指定的值和bean的属性进行绑定</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;server&quot;, ignoreUnknownFields = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServerProperties</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Spring-Boot精髓"><a href="#Spring-Boot精髓" class="headerlink" title="Spring Boot精髓"></a>Spring Boot精髓</h2><p>1.Spring Boot启动会加载大量的自动配置类</p>
+<p>2.我们先查看需要的功能是否有Spring Boot写好的自动配置类</p>
+<p>3.再看自动配置类中配置了哪些组件，如果已经存在我们要用的组件，就不需要再进行配置</p>
+<p>4.给容器中自动配置类添加组件的时候会从xxxProperties类中获取某些组件，我们就可以在配置文件中指定这些属性的值。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">xxxAutoConfiguration: 自动配置类，给容器中添加组件</span><br><span class="line">xxxProperties: 封装配置文件中相关属性</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><p><strong><code>@Conditional</code>派生注解</strong></p>
+<p>作用：必须是<code>@Conditional</code>指定的条件成立，才给容器中添加组件，配置里面的所有内容才生效</p>
+<table>
+<thead>
+<tr>
+<th><code>@Conditional</code>扩展注解</th>
+<th>作用（判断是否满足当前指定的条件）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@ConditionalOnJava</code></td>
+<td>系统的Java版本是否符合要求</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnBean</code></td>
+<td>系统中存在指定的Bean</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnMissingBean</code></td>
+<td>容器中不存在指定的Bean</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnExpression</code></td>
+<td>满足SpEl表达式指定</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnClass</code></td>
+<td>系统中有指定的类</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnMissingClass</code></td>
+<td>系统中没有指定的类</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnSingleCandidate</code></td>
+<td>系统中只有一个指定的Bean，或者这个Bean是首选Bean</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnProperty</code></td>
+<td>系统中指定的属性是否有指定的值</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnSource</code></td>
+<td>类路径下是否存在指定的资源文件</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnWebApplication</code></td>
+<td>当前是Web环境</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnNotWebApplication</code></td>
+<td>当前不是Web环境</td>
+</tr>
+<tr>
+<td><code>@ConditionalOnJndi</code></td>
+<td>JNDI存在指定项</td>
+</tr>
+</tbody></table>
+<p>自动配置类必须在一定的条件下才能生效，如何知道哪些自动配置类生效？</p>
+<p><strong>自动配置报告</strong></p>
+<p>通过启用<code>debug=true</code>属性，在控制台打印自动配置报告，这样就可以很方便的知道哪些自动配置类生效。</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment"># application.properties</span></span><br><span class="line"><span class="attr">debug</span>=<span class="string">true</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line">============================</span><br><span class="line">CONDITIONS EVALUATION REPORT</span><br><span class="line">============================</span><br><span class="line">    </span><br><span class="line">Positive <span class="keyword">matches</span>:(自动配置类启用的)</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">   AopAutoConfiguration matched:</span><br><span class="line">      - @ConditionalOnProperty (spring<span class="variable">.aop</span><span class="variable">.auto</span>=true) matched (OnPropertyCondition)</span><br><span class="line"></span><br><span class="line">   AopAutoConfiguration<span class="variable">.ClassProxyingConfiguration</span> matched:</span><br><span class="line">      - @ConditionalOnMissingClass did <span class="keyword">not</span> find unwanted <span class="keyword">class</span> &#x27;org<span class="variable">.aspectj</span><span class="variable">.weaver</span><span class="variable">.Advice</span>&#x27; (OnClassCondition)</span><br><span class="line">      - @ConditionalOnProperty (spring<span class="variable">.aop</span><span class="variable">.proxy</span>-target-<span class="keyword">class</span>=true) matched (OnPropertyCondition)</span><br><span class="line">          </span><br><span class="line">          </span><br><span class="line">          ...</span><br><span class="line">          </span><br><span class="line"></span><br><span class="line">Negative <span class="keyword">matches</span>:（没有启用，没有匹配成功的）</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">   ActiveMQAutoConfiguration:</span><br><span class="line">      Did <span class="keyword">not</span> match:</span><br><span class="line">         - @ConditionalOnClass did <span class="keyword">not</span> find required <span class="keyword">class</span> &#x27;javax<span class="variable">.jms</span><span class="variable">.ConnectionFactory</span>&#x27; (OnClassCondition)</span><br><span class="line"></span><br><span class="line">   AopAutoConfiguration<span class="variable">.AspectJAutoProxyingConfiguration</span>:</span><br><span class="line">      Did <span class="keyword">not</span> match:</span><br><span class="line">         - @ConditionalOnClass did <span class="keyword">not</span> find required <span class="keyword">class</span> &#x27;org<span class="variable">.aspectj</span><span class="variable">.weaver</span><span class="variable">.Advice</span>&#x27; (OnClassCondition)   </span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <categories>
+        <category>Spring Boot基础</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
 </search>
