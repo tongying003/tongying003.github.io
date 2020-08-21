@@ -19,7 +19,9 @@ application.yml
 
 配置文件的作用：修改Spring Boot自动配置的默认值。
 
-`.yml`是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件
+`.yml`是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件。
+
+<!-- more -->
 
 # YAML语法
 

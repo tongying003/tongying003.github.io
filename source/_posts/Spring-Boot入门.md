@@ -14,6 +14,7 @@ tags:
 
 ![20200518121536](https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013324.png)
 
+<!-- more -->
 # Hello World探究
 
 认识一下SpringBoot的版本仲裁与场景启动器。
