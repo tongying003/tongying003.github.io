@@ -1,11 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Spring Boot之Web开发</title>
+    <url>/2020/08/22/Spring-Boot%E4%B9%8BWeb%E5%BC%80%E5%8F%91/</url>
+    <content><![CDATA[<h1 id="静态资源的映射规则"><a href="#静态资源的映射规则" class="headerlink" title="静态资源的映射规则"></a>静态资源的映射规则</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以设置和静态资源有关的参数，缓存时间等</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;spring.resources&quot;, ignoreUnknownFields = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResourceProperties</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 配置webjars</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.resourceProperties.isAddMappings()) &#123;</span><br><span class="line">        logger.debug(<span class="string">&quot;Default resource handling disabled&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Duration cachePeriod = <span class="keyword">this</span>.resourceProperties.getCache().getPeriod();</span><br><span class="line">    CacheControl cacheControl = <span class="keyword">this</span>.resourceProperties.getCache().getCachecontrol().toHttpCacheControl();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(<span class="string">&quot;/webjars/**&quot;</span>)) &#123;</span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(<span class="string">&quot;/webjars/**&quot;</span>)</span><br><span class="line">                                             .addResourceLocations(<span class="string">&quot;classpath:/META-INF/resources/webjars/&quot;</span>)</span><br><span class="line">                                             .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">    String staticPathPattern = <span class="keyword">this</span>.mvcProperties.getStaticPathPattern();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(staticPathPattern)) &#123;</span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(staticPathPattern)</span><br><span class="line">                                             .addResourceLocations(getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations()))</span><br><span class="line">                                             .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置欢迎页</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> WelcomePageHandlerMapping <span class="title">welcomePageHandlerMapping</span><span class="params">(ApplicationContext applicationContext,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                           FormattingConversionService mvcConversionService, ResourceUrlProvider mvcResourceUrlProvider)</span> </span>&#123;</span><br><span class="line">    WelcomePageHandlerMapping welcomePageHandlerMapping = <span class="keyword">new</span> WelcomePageHandlerMapping(</span><br><span class="line">        <span class="keyword">new</span> TemplateAvailabilityProviders(applicationContext), applicationContext, getWelcomePage(),</span><br><span class="line">        <span class="keyword">this</span>.mvcProperties.getStaticPathPattern());</span><br><span class="line">    welcomePageHandlerMapping.setInterceptors(getInterceptors(mvcConversionService, mvcResourceUrlProvider));</span><br><span class="line">    welcomePageHandlerMapping.setCorsConfigurations(getCorsConfigurations());</span><br><span class="line">    <span class="keyword">return</span> welcomePageHandlerMapping;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>所有的<code>/webjars/</code>，都去<code>classpath:/META-INF/resources/webjars/</code>找资源</strong></p>
+<p><code>webjars</code>：以jar包的方式引入静态资源</p>
+<p><a href="https://www.webjars.org/">WebJars查询</a></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入jquery-webjar--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.webjars<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jquery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200823224701.png" alt="image-20200705110257138"></p>
+<p>在访问的时候只需要写webjars下面资源的名称即可。</p>
+<p>例如：访问jquery.js：<a href="">localhost:8080/webjars/jquery/3.5.1/jquery.js</a></p>
+<p> <strong>/**访问当前项目的任何资源</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] CLASSPATH_RESOURCE_LOCATIONS = &#123; <span class="string">&quot;classpath:/META-INF/resources/&quot;</span>, <span class="string">&quot;classpath:/resources/&quot;</span>,     <span class="string">&quot;classpath:/static/&quot;</span>, <span class="string">&quot;classpath:/public/&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Locations of static resources. Defaults to classpath:[/META-INF/resources/,</span></span><br><span class="line"><span class="comment"> * /resources/, /static/, /public/].</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> String[] staticLocations = CLASSPATH_RESOURCE_LOCATIONS;</span><br></pre></td></tr></table></figure>
+
+<p>访问静态资源：<a href="">localhost:8080/my.js</a></p>
+<p><strong>欢迎页：静态资源文件夹下所有的index.html页面，被/**映射</strong></p>
+<p>访问欢迎页：<a href="">localhost:8080</a></p>
+<p><strong>favicon.ico</strong></p>
+<p>2.2.x前：在静态资源文件下放置favicon.icon即可</p>
+<p>2.2.x后：在html中配置，并将favicon放置在指定的路径</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;icon&quot;</span> <span class="attr">type</span>=<span class="string">&quot;image/x-icon&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/favicon.ico&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="模板引擎"><a href="#模板引擎" class="headerlink" title="模板引擎"></a>模板引擎</h1><p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200823225159.png" alt="模版引擎"></p>
+<h2 id="引入thymeleaf"><a href="#引入thymeleaf" class="headerlink" title="引入thymeleaf"></a>引入thymeleaf</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 切换版本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">thymeleaf.version</span>&gt;</span>3.0.11.RELEASE<span class="tag">&lt;/<span class="name">thymeleaf.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">thymeleaf-layout-dialect.version</span>&gt;</span>2.4.1<span class="tag">&lt;/<span class="name">thymeleaf-layout-dialect.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="thymeleaf语法"><a href="#thymeleaf语法" class="headerlink" title="thymeleaf语法"></a>thymeleaf语法</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThymeleafProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_PREFIX = <span class="string">&quot;classpath:/templates/&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_SUFFIX = <span class="string">&quot;.html&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>只需要把html页面放在<code>classpath:/templates/</code>，thymeleaf就能自动渲染</p>
+<p>导入thymeleaf的名称空间</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.org&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="语法规则"><a href="#语法规则" class="headerlink" title="语法规则"></a>语法规则</h3><h4 id="th属性"><a href="#th属性" class="headerlink" title="th属性"></a>th属性</h4><p> <code>th:text</code>：改变当前元素里面的文本内容</p>
+<p><code>th:任意html属性</code>：替换原生属性的值</p>
+<p>属性优先级：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Order</th>
+<th align="center">Feature</th>
+<th align="left">Explanation</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center"><strong>Fragment inclusion</strong></td>
+<td align="left">片段包含：jsp:include</td>
+<td><code>th:insert</code><br/><code>th:replace</code></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center"><strong>Fragment Interation</strong></td>
+<td align="left">遍历：c:foreach</td>
+<td><code>th:each</code></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center"><strong>Fragment evaluation</strong></td>
+<td align="left">条件判断：c:if</td>
+<td><code>th:if</code><br/><code>th:unless</code><br/><code>th:switch</code><br/><code>th:case</code></td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center"><strong>Local variable definition</strong></td>
+<td align="left">声明变量：c:set</td>
+<td><code>th:object</code><br><code>th:with</code></td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center"><strong>General attribute modification</strong></td>
+<td align="left">任意属性修改<br>支持prepend、append</td>
+<td><code>th:attr</code><br><code>th:attrprepend</code><br><code>th:attrapend</code></td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center"><strong>Special attribute modification</strong></td>
+<td align="left">修改指定属性默认值</td>
+<td><code>th:value</code><br><code>th:href</code><br><code>th:src</code><br>…</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center"><strong>Text(tag body modification)</strong></td>
+<td align="left">修改标签体内容</td>
+<td><code>th:text</code><br><code>th:utext</code></td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center"><strong>Fragment specification</strong></td>
+<td align="left">声明片段</td>
+<td><code>th:fragment</code></td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center"><strong>Fragment removal</strong></td>
+<td align="left">移除片段</td>
+<td><code>th：remove</code></td>
+</tr>
+</tbody></table>
+<h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><ul>
+<li><p><strong>Simple expressions（表达式语法）</strong></p>
+<ul>
+<li><p>**Variable Expressions: <code>$&#123;…&#125;</code>**：获取变量值，OGNL</p>
+<p>（1）获取对象的属性、调用方法</p>
+<p>（2）使用内置的基本对象</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ctx : the context object. </span><br><span class="line">#vars: the context variables. </span><br><span class="line">#locale : the context locale. </span><br><span class="line">#request : (only in Web Contexts) the HttpServletRequest object. </span><br><span class="line">#response : (only in Web Contexts) the HttpServletResponse object. </span><br><span class="line">#session : (only in Web Contexts) the HttpSession object. </span><br><span class="line">#servletContext : (only in Web Contexts) the ServletContext object.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;#locale.country&#125;&quot;</span>&gt;</span>US<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.</span><br></pre></td></tr></table></figure>
+
+<p>（3）内置的一些工具对象</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#execInfo : information about the template being processed. #messages : methods for obtaining externalized messages inside variables expressions, in the same way as they would be obtained using #&#123;…&#125; syntax. </span><br><span class="line">#uris : methods for escaping parts of URLs&#x2F;URIs</span><br><span class="line">#conversions : methods for executing the configured conversion service (if any). </span><br><span class="line">#dates : methods for java.util.Date objects: formatting, component extraction, etc. </span><br><span class="line">#calendars : analogous to #dates , but for java.util.Calendar objects. </span><br><span class="line">#numbers : methods for formatting numeric objects. </span><br><span class="line">#strings : methods for String objects: contains, startsWith, prepending&#x2F;appending, etc. </span><br><span class="line">#objects : methods for objects in general. #bools : methods for boolean evaluation. </span><br><span class="line">#arrays : methods for arrays. </span><br><span class="line">#lists : methods for lists. </span><br><span class="line">#sets : methods for sets.</span><br><span class="line">#maps : methods for maps. </span><br><span class="line">#aggregates : methods for creating aggregates on arrays or collections. </span><br><span class="line">#ids : methods for dealing with id attributes that might be repeated (for example, as a result of an iteration).</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>**Selection Variable Expressions: <code>*&#123;…&#125;</code>**：选择表达式，在功能上和<code>$&#123;&#125;</code>是一样的，补充：配合<code>th:object</code>使用。</p>
+<p>如，下面的两种写法功能相同</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:object</span>=<span class="string">&quot;$&#123;session.user&#125;&quot;</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Name: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;*&#123;firstName&#125;&quot;</span>&gt;</span>Sebastian<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Surname: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;*&#123;lastName&#125;&quot;</span>&gt;</span>Pepper<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Nationality: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;*&#123;nationality&#125;&quot;</span>&gt;</span>Saturn<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Name: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;session.user.firstName&#125;&quot;</span>&gt;</span>Sebastian<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Surname: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;session.user.lastName&#125;&quot;</span>&gt;</span>Pepper<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>Nationality: <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;session.user.nationality&#125;&quot;</span>&gt;</span>Saturn<span class="tag">&lt;/<span class="name">span</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Message Expressions:</strong> <strong><code>#&#123;…&#125;</code></strong> ：获取国际化内容</p>
+</li>
+<li><p><strong>Link URL Expressions:</strong> <strong><code>@&#123;…&#125;</code></strong> ：定义URL</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Will produce &#x27;http://localhost:8080/gtvg/order/details?orderId=3&#x27; (plus rewriting) --&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;details.html&quot;</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;http://localhost:8080/gtvg/order/details(orderId=$&#123;o.id&#125;)&#125;&quot;</span>&gt;</span>view<span class="tag">&lt;/<span class="name">a</span>&gt;</span> </span><br><span class="line"><span class="comment">&lt;!-- Will produce &#x27;/gtvg/order/details?orderId=3&#x27; (plus rewriting) --&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;details.html&quot;</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;/order/details(orderId=$&#123;o.id&#125;)&#125;&quot;</span>&gt;</span>view<span class="tag">&lt;/<span class="name">a</span>&gt;</span> </span><br><span class="line"><span class="comment">&lt;!-- Will produce &#x27;/gtvg/order/3/details&#x27; (plus rewriting) --&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;details.html&quot;</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;/order/&#123;orderId&#125;/details(orderId=$&#123;o.id&#125;)&#125;&quot;</span>&gt;</span>view<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--多个参数--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;detail.html&quot;</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;/order/process(execId=$&#123;execId&#125;,execType=&#x27;FAST&#x27;)&#125;&quot;</span>&gt;</span>view<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Fragment Expressions:</strong> <strong><code>~&#123;…&#125;</code></strong> ：片段引用表达式</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Literals（字面量）</strong> </p>
+<ul>
+<li><p><strong>Text literals:</strong> <strong><code>&#39;one text’</code></strong> <strong>,</strong><code> **&#39;Another one!’</code>** <strong>,…</strong> </p>
+</li>
+<li><p><strong>Number literals:</strong> <strong><code>0</code></strong> <strong>,</strong> <strong><code>34</code></strong> <strong>,</strong> <strong><code>3.0</code></strong> <strong>,</strong> <strong><code>12.3</code></strong> <strong>,…</strong> </p>
+</li>
+<li><p><strong>Boolean literals:</strong> <strong><code>true</code></strong> <strong>,</strong> <strong><code>false</code></strong> </p>
+</li>
+<li><p><strong>Null literal:</strong> <strong><code>null</code></strong> </p>
+</li>
+<li><p><strong>Literal tokens:</strong> <strong><code>one</code></strong> <strong>,</strong> <strong><code>sometext</code></strong> <strong>,</strong> <strong><code>main</code></strong> <strong>,…</strong> </p>
+</li>
+</ul>
+</li>
+<li><p><strong>Text operations:（文本操作）</strong> </p>
+<ul>
+<li><p><strong>String concatenation:</strong> <strong><code>+</code></strong> </p>
+</li>
+<li><p><strong>Literal substitutions:</strong> <strong><code>|The name is $&#123;name&#125;|</code></strong> </p>
+</li>
+</ul>
+</li>
+<li><p><strong>Arithmetic operations:（数学运算）</strong> </p>
+<ul>
+<li><p><strong>Binary operators:</strong> <strong><code>+</code></strong> <strong>,</strong> <strong><code>-</code></strong> <strong>,</strong> <strong><code>*</code></strong> <strong>,</strong> <strong><code>/</code></strong> <strong>,</strong> <strong><code>%</code></strong> </p>
+</li>
+<li><p><strong>Minus sign (unary operator):</strong> <strong><code>-</code></strong> </p>
+</li>
+</ul>
+</li>
+<li><p><strong>Boolean operations:（布尔运算）</strong> </p>
+<ul>
+<li><strong>Binary operators:</strong> <strong><code>and</code></strong> <strong>,</strong> <strong><code>or</code></strong> </li>
+<li><strong>Boolean negation (unary operator):</strong> <strong><code>!</code></strong> <strong>,</strong> <strong><code>not</code></strong> </li>
+</ul>
+</li>
+<li><p><strong>Comparisons and equality:（比较运算）</strong> </p>
+<ul>
+<li><p><strong>Comparators:</strong> <strong><code>&gt;</code></strong> <strong>,</strong> <strong><code>&lt;</code></strong> <strong>,</strong> <strong><code>&gt;=</code></strong> <strong>,</strong> <strong><code>&lt;=</code></strong> <strong>(</strong> <strong><code>gt</code></strong> <strong>,</strong> <strong><code>lt</code></strong> <strong>,</strong> <strong><code>ge</code></strong> <strong>,</strong> <strong><code>le</code></strong> <strong>)</strong> </p>
+</li>
+<li><p><strong>Equality operators:</strong> <strong><code>==</code></strong> <strong>,</strong> <strong><code>!=</code></strong> <strong>(</strong> <strong><code>eq</code></strong> <strong>,</strong> <strong><code>ne</code></strong> <strong>)</strong> </p>
+</li>
+</ul>
+</li>
+<li><p><strong>Conditional operators:（条件运算）</strong> </p>
+<ul>
+<li><p><strong>If-then:</strong> <strong><code>(if) ? (then)</code></strong> </p>
+</li>
+<li><p><strong>If-then-else:</strong> <strong><code>(if) ? (then) : (else)</code></strong> </p>
+</li>
+<li><p><strong>Default:</strong> <strong><code>(value) ?: (defaultvalue)</code></strong> </p>
+</li>
+</ul>
+</li>
+<li><p><strong>Special tokens:（特殊操作）</strong> </p>
+<ul>
+<li><strong>No-Operation:</strong> <strong><code>_</code></strong></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Spring Boot基础</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring Boot入门</title>
     <url>/2020/08/17/Spring-Boot%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<h1 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h1><p>每个功能元素最终都是一个可独立替换和独立升级的软件单元。</p>
 <p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013324.png" alt="20200518121536"></p>
 <a id="more"></a>
+
 <h1 id="Hello-World探究"><a href="#Hello-World探究" class="headerlink" title="Hello World探究"></a>Hello World探究</h1><p>认识一下SpringBoot的版本仲裁与场景启动器。</p>
 <h2 id="POM文件"><a href="#POM文件" class="headerlink" title="POM文件"></a>POM文件</h2><h3 id="父项目"><a href="#父项目" class="headerlink" title="父项目"></a>父项目</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -41,6 +249,146 @@
 
 <p>Spring Boot在启动时从类路径下的<code>META-INF/spring.factories</code> 中获取<code>EnableAutoConfiguration</code>指定的值，将这些值作为自动配置类导入到容器中，自动配置类就生效，帮我们进行自动配置工作。</p>
 <p>J2EE的整体解决方案和自动配置都在<code>spring-boot-autoconfigure-2.1.12.RELEASE.jar</code></p>
+]]></content>
+      <categories>
+        <category>Spring Boot基础</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring Boot日志</title>
+    <url>/2020/08/22/Spring-Boot%E6%97%A5%E5%BF%97/</url>
+    <content><![CDATA[<h1 id="日志框架的分类与选择"><a href="#日志框架的分类与选择" class="headerlink" title="日志框架的分类与选择"></a>日志框架的分类与选择</h1><p><strong>常见的日志门面</strong></p>
+<p>JCL（Jakarta Commons Logging）</p>
+<p>SLF4j（Simple Logging Facade for Java）</p>
+<p>jboss-logging</p>
+<a id="more"></a>
+
+<p><strong>常见的日志实现</strong></p>
+<p>Log4j</p>
+<p>JUL（java.util.logging）</p>
+<p>log4j2</p>
+<p>Logback</p>
+<p><strong>日志框架选择</strong></p>
+<p>Spring Boot在框架内容部使用JCL，spring-boot-starter-logging采用了==slf4j + logback==的形式，Spring Boot也能自动适配（JUL、Log4j2、logback）并简化配置。</p>
+<h1 id="SLF4j使用原理"><a href="#SLF4j使用原理" class="headerlink" title="SLF4j使用原理"></a>SLF4j使用原理</h1><p><strong>如何在系统中使用SLF4j</strong></p>
+<p>在开发的时候，日志记录方法的调用，不应该直接调用日志的实现类，而是调用日志抽象层里面的方法。</p>
+<p>给系统导入slf4j和logback的jar包</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Logger logger = LoggerFactory.getLogger(HelloWorld.class);</span><br><span class="line">    logger.info(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>图示：</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822181558.png" alt="click to enlarge"></p>
+<p><strong>遗留问题</strong></p>
+<p>统一日志记录：即使项目中使用到了其他框架也统一使用slf4j进行输出</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822181800.png" alt="click to enlarge"></p>
+<p>如何让系统中所有的日志都统一到slf4j？</p>
+<p>1）将系统中其他日志框架先排除出去</p>
+<p>2）用中间包来替换原有的日志框架</p>
+<p>3）导入slf4j其他的实现</p>
+<h1 id="Spring-Boot日志关系"><a href="#Spring-Boot日志关系" class="headerlink" title="Spring Boot日志关系"></a>Spring Boot日志关系</h1><p>Spring Boot日志功能：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.1.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>底层依赖关系：</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822181924.png" alt="image-20200704131902902"></p>
+<p>1）Spring Boot底层也是使用slf4j + logback的方式进行日志记录</p>
+<p>2）Spring Boot也把其他的日志都替换成了slf4j</p>
+<p>3）中间替换包<code>jul-to-slf4j</code>、<code>log4j-to-slf4j</code></p>
+<p>4）如果在项目中引入了其他框架，一定要把这个框架的默认日志依赖移除掉，不然中间替换包与默认日志依赖不就冲突了吗？</p>
+<p>例如：</p>
+<p>Spring5并没有使用<code>commons-logging</code>，而是仿照<code>commons-logging</code>实现的<code>spring-jcl</code>，只不过包名是<code>org.apache.commons.logging</code>而已，使其可以支持<code>slf4j</code>，所以Spring5并不需要排除掉<code>commons.logging</code></p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200823010317.png" alt="image-20200704132720699"></p>
+<h1 id="日志使用"><a href="#日志使用" class="headerlink" title="日志使用"></a>日志使用</h1><h2 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h2><p>Spring Boot默认帮我们配置好了日志</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SpringBoot03LoggingApplicationTests</span> </span>&#123;</span><br><span class="line">    Logger logger = LoggerFactory.getLogger(getClass());</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        logger.trace(<span class="string">&quot;这是trace日志&quot;</span>);</span><br><span class="line">        logger.debug(<span class="string">&quot;这是debug日志&quot;</span>);</span><br><span class="line">        logger.info(<span class="string">&quot;这是info日志&quot;</span>);</span><br><span class="line">        logger.warn(<span class="string">&quot;这是warn日志&quot;</span>);</span><br><span class="line">        logger.error(<span class="string">&quot;这是error日志&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>日志级别：<code>trace &lt; debug &lt; info &lt; warn &lt; error</code></p>
+</li>
+<li><p>Spring默认规定的日志级别（root）：<code>info</code></p>
+</li>
+<li><p>日志的路径</p>
+</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在指定的路径下生成日志文件，若不指定路径，则在项目路径下生成</span></span><br><span class="line"><span class="meta">logging.file.name</span>=<span class="string">mylog.log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在指定路径下生成名为springboot.log日志文件</span></span><br><span class="line"><span class="meta">logging.file.path</span>=<span class="string">/springboot/log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 若都不指定，只在控制台输出</span></span><br><span class="line"><span class="comment"># 若都指定，logging.file.name生效</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left"><code>logging.file.name</code></th>
+<th align="left"><code>logging.file.path</code></th>
+<th align="left">Example</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><em>(none)</em></td>
+<td align="left"><em>(none)</em></td>
+<td align="left"></td>
+<td align="left">Console only logging.</td>
+</tr>
+<tr>
+<td align="left">Specific file</td>
+<td align="left"><em>(none)</em></td>
+<td align="left"><code>my.log</code></td>
+<td align="left">Writes to the specified log file. Names can be an exact location or relative to the current directory.</td>
+</tr>
+<tr>
+<td align="left"><em>(none)</em></td>
+<td align="left">Specific directory</td>
+<td align="left"><code>/var/log</code></td>
+<td align="left">Writes <code>spring.log</code> to the specified directory. Names can be an exact location or relative to the current directory.</td>
+</tr>
+</tbody></table>
+<ul>
+<li>日志模版</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 控制台日志输出的格式</span></span><br><span class="line"><span class="meta">logging.pattern.console</span>=<span class="string">%d&#123;HH:mm:ss.SSS&#125; [%thread] %-5level %logger&#123;36&#125; - %msg%n</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 日志文件中输出个格式</span></span><br><span class="line"><span class="meta">logging.pattern.file</span>=<span class="string">%d&#123;HH:mm:ss.SSS&#125; [%thread] %-5level %logger&#123;36&#125; - %msg%n</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">%d：时间</span></span><br><span class="line"><span class="attr">%thread：线程名</span></span><br><span class="line"><span class="attr">%-5level：级别从左显示5个字符宽度</span></span><br><span class="line"><span class="attr">%logger&#123;36&#125;：表示logger名字最长50个字符，否则按照句点分割</span></span><br><span class="line"><span class="attr">%msg：日志信息</span></span><br><span class="line"><span class="attr">%n：换行符</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="指定配置"><a href="#指定配置" class="headerlink" title="指定配置"></a>指定配置</h2><p><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-logging">官网文档</a></p>
+<p>给类路径下放上每个日志框架自己的配置文件即可，Spring Boot就不使用默认配置了。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Logging System</th>
+<th align="left">Customization</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Logback</td>
+<td align="left"><code>logback-spring.xml</code>, <code>logback-spring.groovy</code>, <code>logback.xml</code>, or <code>logback.groovy</code></td>
+</tr>
+<tr>
+<td align="left">Log4j2</td>
+<td align="left"><code>log4j2-spring.xml</code> or <code>log4j2.xml</code></td>
+</tr>
+<tr>
+<td align="left">JDK (Java Util Logging)</td>
+<td align="left"><code>logging.properties</code></td>
+</tr>
+</tbody></table>
+<p><code>logback.xml</code>：配置文件直接被日志框架识别</p>
+<p><code>logback-spring.xml</code>：日志框架不直接加载日志的配置项，由Spring Boot解析日志的配置，推荐使用。可以使用Spring Boot的高级特性，如<code>&lt;springProfile&gt;</code>标签。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">&quot;staging&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- configuration to be enabled when the &quot;staging&quot; profile is active --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">&quot;dev | staging&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- configuration to be enabled when the &quot;dev&quot; or &quot;staging&quot; profiles are active --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">&quot;!production&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- configuration to be enabled when the &quot;production&quot; profile is not active --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>logback.xml配置示例：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">scan：当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。</span></span><br><span class="line"><span class="comment">scanPeriod：设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒当scan为true时，此属性生效。默认的时间间隔为1分钟。</span></span><br><span class="line"><span class="comment">debug：当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span> <span class="attr">scan</span>=<span class="string">&quot;false&quot;</span> <span class="attr">scanPeriod</span>=<span class="string">&quot;60 seconds&quot;</span> <span class="attr">debug</span>=<span class="string">&quot;false&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义日志的根目录 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;LOG_HOME&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/Users/tongying/Workspace/springboot&quot;</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义日志文件名称 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;appName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;javalearning-springboot&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- ch.qos.logback.core.ConsoleAppender 表示控制台输出 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">&quot;stdout&quot;</span> <span class="attr">class</span>=<span class="string">&quot;ch.qos.logback.core.ConsoleAppender&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        日志输出格式：</span></span><br><span class="line"><span class="comment">            %d表示日期时间，</span></span><br><span class="line"><span class="comment">            %thread表示线程名，</span></span><br><span class="line"><span class="comment">            %-5level：级别从左显示5个字符宽度</span></span><br><span class="line"><span class="comment">            %logger&#123;50&#125; 表示logger名字最长50个字符，否则按照句点分割。</span></span><br><span class="line"><span class="comment">            %msg：日志消息，</span></span><br><span class="line"><span class="comment">            %n是换行符</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">layout</span> <span class="attr">class</span>=<span class="string">&quot;ch.qos.logback.classic.PatternLayout&quot;</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--使用logback-spring.xml时，支持Spring Boot高级特性springProfile，在不同的Profile生效--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">&quot;dev&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; --&gt; [%thread] %-5level %logger&#123;50&#125; - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">&quot;!dev&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; == [%thread] %-5level %logger&#123;50&#125; - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">&quot;appLogAppender&quot;</span> <span class="attr">class</span>=<span class="string">&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 指定日志文件的名称 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>$&#123;LOG_HOME&#125;/$&#123;appName&#125;.log<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名</span></span><br><span class="line"><span class="comment">        TimeBasedRollingPolicy： 最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动。</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">            滚动时产生的文件的存放位置及文件名称 %d&#123;yyyy-MM-dd&#125;：按天进行日志滚动</span></span><br><span class="line"><span class="comment">            %i：当文件大小超过maxFileSize时，按照i进行文件滚动</span></span><br><span class="line"><span class="comment">            --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;LOG_HOME&#125;/$&#123;appName&#125;-%d&#123;yyyy-MM-dd&#125;-%i.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">            可选节点，控制保留的归档文件的最大数量，超出数量就删除旧文件。假设设置每天滚动，</span></span><br><span class="line"><span class="comment">            且maxHistory是365，则只保存最近365天的文件，删除之前的旧文件。注意，删除旧文件是，</span></span><br><span class="line"><span class="comment">            那些为了归档而创建的目录也会被删除。</span></span><br><span class="line"><span class="comment">            --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">MaxHistory</span>&gt;</span>365<span class="tag">&lt;/<span class="name">MaxHistory</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">            当日志文件超过maxFileSize指定的大小是，根据上面提到的%i进行日志文件滚动 注意此处配置SizeBasedTriggeringPolicy是无法实现按文件大小进行滚动的，必须配置timeBasedFileNamingAndTriggeringPolicy</span></span><br><span class="line"><span class="comment">            --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">timeBasedFileNamingAndTriggeringPolicy</span> <span class="attr">class</span>=<span class="string">&quot;ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">maxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">maxFileSize</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">timeBasedFileNamingAndTriggeringPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 日志输出格式： --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">layout</span> <span class="attr">class</span>=<span class="string">&quot;ch.qos.logback.classic.PatternLayout&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [ %thread ] - [ %-5level ] [ %logger&#123;50&#125; : %line ] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        logger主要用于存放日志对象，也可以定义日志类型、级别</span></span><br><span class="line"><span class="comment">        name：表示匹配的logger类型前缀，也就是包的前半部分</span></span><br><span class="line"><span class="comment">        level：要记录的日志级别，包括 TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR</span></span><br><span class="line"><span class="comment">        additivity：作用在于children-logger是否使用 rootLogger配置的appender进行输出，</span></span><br><span class="line"><span class="comment">        false：表示只用当前logger的appender-ref，true：</span></span><br><span class="line"><span class="comment">        表示当前logger的appender-ref和rootLogger的appender-ref都有效</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- hibernate logger --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">&quot;com.atguigu&quot;</span> <span class="attr">level</span>=<span class="string">&quot;debug&quot;</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Spring framework logger --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">&quot;org.springframework&quot;</span> <span class="attr">level</span>=<span class="string">&quot;debug&quot;</span> <span class="attr">additivity</span>=<span class="string">&quot;false&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">    root与logger是父子关系，没有特别定义则默认为root，任何一个类只会和一个logger对应，</span></span><br><span class="line"><span class="comment">    要么是定义的logger，要么是root，判断的关键在于找到这个logger，然后判断这个logger的appender和level。</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">&quot;info&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">&quot;stdout&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">&quot;appLogAppender&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="切换日志框架"><a href="#切换日志框架" class="headerlink" title="切换日志框架"></a>切换日志框架</h2><p>可以按照slf4j的日志适配图，进行相关的切换</p>
+<p><strong>slf4j + log4j</strong></p>
+<p>这样做并没有什么意义</p>
+<p>排除掉<code>logback</code>、<code>log4j-to-slf4j</code>，引入<code>slf4j-log4j12</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>log4j-to-slf4j<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>切换为log4j2</strong></p>
+<p>排除掉<code>spring-boot-starter-logging</code>，引入<code>spring-boot-starter-log4j2</code>即可</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-log4j2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>Spring Boot基础</category>
