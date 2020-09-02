@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Spring Boot之Web开发</title>
-    <url>/2020/08/22/Spring-Boot%E4%B9%8BWeb%E5%BC%80%E5%8F%91/</url>
+    <url>/blog/2020/08/22/Spring-Boot%E4%B9%8BWeb%E5%BC%80%E5%8F%91/</url>
     <content><![CDATA[<h1 id="静态资源的映射规则"><a href="#静态资源的映射规则" class="headerlink" title="静态资源的映射规则"></a>静态资源的映射规则</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以设置和静态资源有关的参数，缓存时间等</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;spring.resources&quot;, ignoreUnknownFields = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResourceProperties</span> </span>&#123;</span><br></pre></td></tr></table></figure>
 
 <a id="more"></a>
@@ -209,7 +209,7 @@
   </entry>
   <entry>
     <title>Spring Boot入门</title>
-    <url>/2020/08/17/Spring-Boot%E5%85%A5%E9%97%A8/</url>
+    <url>/blog/2020/08/17/Spring-Boot%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<h1 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h1><p>每个功能元素最终都是一个可独立替换和独立升级的软件单元。</p>
 <p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200822013324.png" alt="20200518121536"></p>
 <a id="more"></a>
@@ -260,7 +260,7 @@
   </entry>
   <entry>
     <title>Spring Boot日志</title>
-    <url>/2020/08/22/Spring-Boot%E6%97%A5%E5%BF%97/</url>
+    <url>/blog/2020/08/22/Spring-Boot%E6%97%A5%E5%BF%97/</url>
     <content><![CDATA[<h1 id="日志框架的分类与选择"><a href="#日志框架的分类与选择" class="headerlink" title="日志框架的分类与选择"></a>日志框架的分类与选择</h1><p><strong>常见的日志门面</strong></p>
 <p>JCL（Jakarta Commons Logging）</p>
 <p>SLF4j（Simple Logging Facade for Java）</p>
@@ -400,7 +400,7 @@
   </entry>
   <entry>
     <title>Spring Boot配置</title>
-    <url>/2020/08/21/Spring-Boot%E9%85%8D%E7%BD%AE/</url>
+    <url>/blog/2020/08/21/Spring-Boot%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p> Spring Boot使用一个全局的配置文件，配置文件名是固定的</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">application.properties</span><br><span class="line">application.yml</span><br></pre></td></tr></table></figure>
 
