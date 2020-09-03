@@ -1,15 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Docker初识</title>
+    <url>/blog/2020/09/03/Docker%E5%88%9D%E8%AF%86/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Docker是一个开源的应用容器引擎</p>
+<p>Docker支持将软件编译成一个镜像，然后在镜像中各种软件做好配置，将镜像发布出去，其他使用者可以直接使用这个镜像</p>
+<p>运行中的这个镜像称为容器，容器启动是非常快速的</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200903234429.svg" alt="Docker"></p>
+<a id="more"></a>
+
+<h1 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h1><p><strong>Docker主机（Host）</strong>：安装了Docker程序的主机（Docker直接安装在操作系统之上）</p>
+<p><strong>Docker客户端（Client</strong>）：连接Docker主机进行操作</p>
+<p><strong>Docker仓库（Registry）</strong>：用来保存各种打包好的软件镜像</p>
+<p><strong>Docker镜像（Images）</strong>：软件打包好的镜像，放在Docker仓库中</p>
+<p><strong>Docker容器（Container）</strong>：镜像启动后的实例称为一个容器，容器是独立运行的一个或一组应用</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200903234429.svg" alt="Docker2"></p>
+<p><strong>使用Docker的步骤</strong>：</p>
+<p>1）安装Docker</p>
+<p>2）去Docker仓库找到这个软件对应的镜像</p>
+<p>3）使用Docker运行这个镜像，这个镜像就会生成一个Docker容器</p>
+<p>4）对容器的启动停止就是对软件的启动停止</p>
+<h1 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h1><p><a href="https://docs.docker.com/engine/install/centos/">Docker官网安装教程</a></p>
+<p>启动Docker</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>停止Docker</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl stop docker</span><br></pre></td></tr></table></figure>
+
+<p>更换阿里镜像源</p>
+<ul>
+<li><p>进入<a href="https://cr.console.aliyun.com/">https://cr.console.aliyun.com/</a></p>
+</li>
+<li><p>点击左侧<code>镜像加速器</code></p>
+</li>
+<li><p>执行命令<code>vim /etc/docker/daemon.json</code>，加入如下内容</p>
+</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://kh4uoxfp.mirror.aliyuncs.com&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重启docker</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h1 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h1><h2 id="镜像操作"><a href="#镜像操作" class="headerlink" title="镜像操作"></a>镜像操作</h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>检索</td>
+<td><code>docker search 关键字</code></td>
+<td>在docker hub上检索镜像详细信息，如镜像的TAG</td>
+</tr>
+<tr>
+<td>拉取</td>
+<td><code>docker pull 镜像名:tag</code></td>
+<td>:tag是可选的，tag表示标签，多为软件的版本，默认是latest</td>
+</tr>
+<tr>
+<td>列表</td>
+<td><code>docker images</code></td>
+<td>查看所有本地镜像</td>
+</tr>
+<tr>
+<td>删除</td>
+<td><code>docker rmi image-id</code></td>
+<td>删除指定的本地镜像</td>
+</tr>
+</tbody></table>
+<h2 id="容器操作"><a href="#容器操作" class="headerlink" title="容器操作"></a>容器操作</h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>运行</td>
+<td><code>docker run --name container-name -d image-name</code><br>eg: <code>docker run --name myredis -d redis</code></td>
+<td><code>--name</code>:自定义容器名<br><code>-d</code>：后台运行<br>image-name: 指定镜像模版</td>
+</tr>
+<tr>
+<td>列表</td>
+<td><code>docker ps</code>（查看运行中的容器）</td>
+<td>加上<code>-a</code>可以查看所有容器</td>
+</tr>
+<tr>
+<td>停止</td>
+<td><code>docker stop container-name/container-id</code></td>
+<td>停止当前运行的容器</td>
+</tr>
+<tr>
+<td>启动</td>
+<td><code>docker start container-name/container-id</code></td>
+<td>启动容器</td>
+</tr>
+<tr>
+<td>删除</td>
+<td><code>docker rm container-id</code></td>
+<td>删除指定容器</td>
+</tr>
+<tr>
+<td>端口映射</td>
+<td>-p 6379:6379<br>eg:<code>docker run -d -p 6379:6379 --name myredis docker.io/redis</code></td>
+<td>-p:主机端口（映射到）容器内部的端口</td>
+</tr>
+<tr>
+<td>容器日志</td>
+<td><code>docker logs container-name/container-id</code></td>
+<td></td>
+</tr>
+<tr>
+<td>更多命令</td>
+<td><a href="https://docs.docker.com/reference/">https://docs.docker.com/reference/</a></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>软件镜像—&gt;运行镜像—&gt;产生一个容器（正在运行的软件）</p>
+<p><strong>示例</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1. 搜索镜像</span><br><span class="line">[root@Mangoo ~]# docker search tomcat</span><br><span class="line">2. 拉去镜像</span><br><span class="line">[root@Mangoo ~]# docker pull tomcat</span><br><span class="line">3. 根据镜像启动容器</span><br><span class="line">[root@Mangoo ~]# docker run --name mytomcat -d tomcat:latest</span><br><span class="line">4. 查看运行中的容器</span><br><span class="line">[root@Mangoo ~]# docker ps</span><br><span class="line">5. 停止运行中的容器</span><br><span class="line">[root@Mangoo ~]# docker stop a3ba0917b5dd</span><br><span class="line">6. 查看所有的容器</span><br><span class="line">[root@Mangoo ~]# docker ps -a</span><br><span class="line">7. 启动容器</span><br><span class="line">[root@Mangoo ~]# docker start a3ba0917b5dd</span><br><span class="line">8. 删除容器</span><br><span class="line">[root@Mangoo ~]# docker rm a3ba0917b5dd</span><br><span class="line">9. 端口映射</span><br><span class="line">[root@Mangoo ~]# docker run -p -d 8888:8080 tomcat</span><br><span class="line">10. 访问tomcat首页</span><br><span class="line">1) 在阿里云安全组配置中打开8888端口</span><br><span class="line">2）若是启用了防火墙，配置防火墙并打开8888端口</span><br><span class="line">3）在阿里源拉取的镜像webapps目录下为空，需将webapps.dist改名为webapps</span><br><span class="line">4) 访问阿里云主机外网ip:8888</span><br><span class="line"></span><br><span class="line">11. 查看容器的日志</span><br><span class="line">[root@Mangoo ~]# docker logs 8428ed7be348</span><br><span class="line">12.更多命令可以参考每个镜像的文档</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring Boot与数据访问</title>
+    <url>/blog/2020/09/03/Spring-Boot%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/</url>
+    <content><![CDATA[<h1 id="JDBC"><a href="#JDBC" class="headerlink" title="JDBC"></a>JDBC</h1><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>数据源配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://47.107.230.85/jdbc</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<p>​        默认使用com.zaxxer.hikari.HikariDataSource作为数据源</p>
+<p>​        数据源相关配置在<strong>DataSourceProperties</strong>中</p>
+<a id="more"></a>
+
+<p><strong>自动配置原理：</strong></p>
+<ol>
+<li><p>参考<strong>DataSourceConfiguration</strong>，根据配置创建数据源，默认使用<strong>Hikari</strong>连接池，可以使用<code>spring.datasource.type</code>指定自定义的数据源类型</p>
+</li>
+<li><p>Spring Boot默认支持的数据源有</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">org.apache.tomcat.jdbc.pool.DataSource</span><br><span class="line">com.zaxxer.hikari.HikariDataSource</span><br><span class="line">org.apache.commons.dbcp2.BasicDataSource</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自定义数据源类型</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Generic DataSource configuration.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="meta">@Configuration(proxyBeanMethods = false)</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean(DataSource.class)</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty(name = &quot;spring.datasource.type&quot;)</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Generic</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">DataSource <span class="title">dataSource</span><span class="params">(DataSourceProperties properties)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 使用DataSourceBuilder创建数据源，利用反射创建响应type的数据源，并且绑定相关属性</span></span><br><span class="line">        <span class="keyword">return</span> properties.initializeDataSourceBuilder().build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DataSourceInitializer</p>
+<p> <strong>方法：<code>runScripts</code></strong></p>
+<p> 作用：运行sql语句</p>
+ <br>
+
+<p> <strong>方法：<code>createSchema</code></strong></p>
+<p> 作用：调用runScripts运行建表语句</p>
+<p> 默认文件名：<code>classpath*:schema-all.sql</code></p>
+<p> 也可用spring.datasource.schema指定路径和文件名</p>
+ <br>
+
+<p> <strong>方法：<code>initSchema</code></strong></p>
+<p> 默认作用：调用runScripts运行插入数据的sql语句</p>
+<p> 文件名：<code>classpath*:data.sql</code></p>
+<p> 也可以用spring.datasource.data指定路径和文件名</p>
+ <br>
+
+<p> 需要打开如下配置才能自动调用</p>
+ <figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">initialization-mode</span>: <span class="string">always</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>操作数据库：自动配置了JdbcTemplate操作数据库。</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    JdbcTemplate jdbcTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/query&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">query</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Map&lt;String, Object&gt;&gt; list = jdbcTemplate.queryForList(<span class="string">&quot;select * from department&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> list.get(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="整合Druid数据源"><a href="#整合Druid数据源" class="headerlink" title="整合Druid数据源"></a>整合Druid数据源</h1> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DruidConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//数据源属性配置</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(prefix = &quot;spring.datasource&quot;)</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">druid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置druid的监控</span></span><br><span class="line">    <span class="comment">// 1. 配置一个管理后台的servlet</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServletRegistrationBean&lt;StatViewServlet&gt; <span class="title">statViewServlet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ServletRegistrationBean&lt;StatViewServlet&gt; bean = <span class="keyword">new</span> ServletRegistrationBean&lt;&gt;(<span class="keyword">new</span> StatViewServlet(), <span class="string">&quot;/druid/*&quot;</span>);</span><br><span class="line">        Map&lt;String, String&gt; initParams = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        initParams.put(<span class="string">&quot;loginUsername&quot;</span>, <span class="string">&quot;admin&quot;</span>);</span><br><span class="line">        initParams.put(<span class="string">&quot;loginPassword&quot;</span>, <span class="string">&quot;123456&quot;</span>);</span><br><span class="line">        initParams.put(<span class="string">&quot;allow&quot;</span>, <span class="string">&quot;&quot;</span>);   <span class="comment">// 默认允许所有访问</span></span><br><span class="line">        initParams.put(<span class="string">&quot;deny&quot;</span>, <span class="string">&quot;192.168.11.101&quot;</span>);</span><br><span class="line"></span><br><span class="line">        bean.setInitParameters(initParams);</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 配置一个web的监控filter</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">FilterRegistrationBean&lt;WebStatFilter&gt; <span class="title">statViewFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FilterRegistrationBean&lt;WebStatFilter&gt; bean = <span class="keyword">new</span> FilterRegistrationBean&lt;&gt;();</span><br><span class="line">        bean.setFilter(<span class="keyword">new</span> WebStatFilter());</span><br><span class="line">        Map&lt;String, String&gt; initParams = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        initParams.put(<span class="string">&quot;exclusions&quot;</span>, <span class="string">&quot;*.js, *.css, /druid/*&quot;</span>);</span><br><span class="line">        bean.setUrlPatterns(Arrays.asList(<span class="string">&quot;/*&quot;</span>));</span><br><span class="line">        bean.setInitParameters(initParams);</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="整合Mybatis"><a href="#整合Mybatis" class="headerlink" title="整合Mybatis"></a>整合Mybatis</h1><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200903235426.svg" alt="image-20200829160911280"></p>
+<p><strong>步骤：</strong></p>
+<p>配置数据源（见上节）</p>
+<p>给数据库建表</p>
+<p>创建Java Bean</p>
+<h2 id="注解版"><a href="#注解版" class="headerlink" title="注解版"></a>注解版</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 指定这是一个操作数据库的mapper</span></span><br><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DepartmentMapper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Select(&quot;select * from department where id = #&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function">Department <span class="title">getDeptById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Delete(&quot;delete from department where id = #&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">deleteDeptById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Options(useGeneratedKeys = true, keyProperty = &quot;id&quot;)</span></span><br><span class="line">    <span class="meta">@Insert(&quot;insert into department(departmentName) values(#&#123;departmentName&#125;)&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">insertDept</span><span class="params">(Department department)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Update(&quot;update department set departmentName = #&#123;departmentName&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">updateDepat</span><span class="params">(Department department)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自定义MyBatis的配置规则：</p>
+<p>给容器中添加一个ConfigurationCustomizer</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBatisConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ConfigurationCustomizer <span class="title">configurationCustomizer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> configuration -&gt; configuration.setMapUnderscoreToCamelCase(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用@MapperScan注解扫描所有的Mapper接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@MapperScan(basePackages = &quot;com.javalearning.springboot.mapper&quot;)</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringBoot06DataMybatisApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(SpringBoot06DataMybatisApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置文件版"><a href="#配置文件版" class="headerlink" title="配置文件版"></a>配置文件版</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="comment"># 指定全局配置文件的位置</span></span><br><span class="line">  <span class="attr">config-location:</span> <span class="string">classpath:mybatis/mybatis-config.xml</span></span><br><span class="line">  <span class="comment"># 指定sql映射文件的位置</span></span><br><span class="line">  <span class="attr">mapper-locations:</span> <span class="string">classpath:mybatis/mapper/*.xml</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="整合JPA"><a href="#整合JPA" class="headerlink" title="整合JPA"></a>整合JPA</h1><h2 id="Spring-Boot-JPA简介"><a href="#Spring-Boot-JPA简介" class="headerlink" title="Spring Boot JPA简介"></a>Spring Boot JPA简介</h2><p>Spring Data</p>
+<p>Spring Data项目是目前为了简化构建基于Spring框架应用的数据库访问技术，包括非关系数据库、Map-Reduce框架、云数据服务等等，另外也包含对关系型数据库的访问支持。</p>
+<p>Spring Data包含多个子项目：</p>
+<ul>
+<li>Spring Data Commons</li>
+<li>Spring Data JPA</li>
+<li>Spring Data KeyValue</li>
+<li>Spring Data MongoDB</li>
+<li>Spring Data LDAP</li>
+<li>Spring Data Gemfire</li>
+<li>Spring Data REST</li>
+<li>Spring Data Redis</li>
+<li>Spring Data for Apache Cassandra</li>
+<li>Spring Data for Apache Solr</li>
+<li>Spring Data Couchbase(community module)</li>
+<li>Spring Data Elasticsearch(community module)</li>
+<li>Spring Data Neo4j(community module)</li>
+</ul>
+<p><strong>Spring Data特点</strong></p>
+<p>Spring Data为我们提供使用同一的API来对数据访问层进行操作，这主要是Spring Data Commons项目来实现的。Spring Data Commons让我们在使用关系型或者非关系型数据访问技术时都基于Spring提供的统一标准，标准包含了CRUD、排序和分页等相关操作。</p>
+<p><strong>统一的Repository接口</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 统一接口</span></span><br><span class="line">Repository&lt;T, ID extends Serializable&gt;</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 基于乐观锁机制</span></span><br><span class="line">RevisionRepository&lt;T, ID extends Serializable, N extends Number &amp; Comparable&lt;N&gt;&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 基于CRUD操作    </span></span><br><span class="line">CrudRepository&lt;T, ID extends Serializable&gt;</span><br><span class="line">    </span><br><span class="line"><span class="comment">// 基本CRUD操作</span></span><br><span class="line">PagingAndSortingRepository&lt;T, ID extends Serializable&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>提供数据访问模板类</strong></p>
+<p>如MongoTemplate、RedisTemplate</p>
+<p><strong>JPA与Spring Data</strong></p>
+<p>1）编写接口继承JpaRepository即有crud及分页等基本功能</p>
+<p>2）在接口中只需要声明符合规范的方法，即拥有对应的功能</p>
+<p>3）@Query自定义查询，定制查询SQL</p>
+<p>4）Specifications查询（Spring Data JPA支持JPA2.0的Criteria查询）</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200903235426.svg" alt="SpringDataJPA"></p>
+<h2 id="整合JPA-1"><a href="#整合JPA-1" class="headerlink" title="整合JPA"></a>整合JPA</h2><p>编写一个实体类和数据表进行映射，并且配置好映射关系</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span>         <span class="comment">// 告诉JPA这是一个实体类</span></span><br><span class="line"><span class="meta">@Table(name = &quot;tbl_user&quot;)</span>       <span class="comment">// 用来指定与哪个数据表对应，如果省略默认表明就是user</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Integer Id;</span><br><span class="line">    <span class="meta">@Column(name = &quot;last_name&quot;, length = 50)</span></span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br><span class="line">    <span class="meta">@Column</span>     <span class="comment">// 省略列名就是属性名</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写一个Dao层接口来操作实体类对应的数据表（Repository）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 继承JpaRepository来完成对数据库的操作</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>, <span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>基本的配置JpaProperties</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">    <span class="comment"># 更新或创建表结构</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">update</span></span><br><span class="line">    <span class="comment"># 控制台显示SQL</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">database:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Spring Boot基础</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring Boot之Web开发</title>
     <url>/blog/2020/08/22/Spring-Boot%E4%B9%8BWeb%E5%BC%80%E5%8F%91/</url>
     <content><![CDATA[<h1 id="静态资源的映射规则"><a href="#静态资源的映射规则" class="headerlink" title="静态资源的映射规则"></a>静态资源的映射规则</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以设置和静态资源有关的参数，缓存时间等</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;spring.resources&quot;, ignoreUnknownFields = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResourceProperties</span> </span>&#123;</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
-
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 配置webjars</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.resourceProperties.isAddMappings()) &#123;</span><br><span class="line">        logger.debug(<span class="string">&quot;Default resource handling disabled&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Duration cachePeriod = <span class="keyword">this</span>.resourceProperties.getCache().getPeriod();</span><br><span class="line">    CacheControl cacheControl = <span class="keyword">this</span>.resourceProperties.getCache().getCachecontrol().toHttpCacheControl();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(<span class="string">&quot;/webjars/**&quot;</span>)) &#123;</span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(<span class="string">&quot;/webjars/**&quot;</span>)</span><br><span class="line">                                             .addResourceLocations(<span class="string">&quot;classpath:/META-INF/resources/webjars/&quot;</span>)</span><br><span class="line">                                             .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">    String staticPathPattern = <span class="keyword">this</span>.mvcProperties.getStaticPathPattern();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(staticPathPattern)) &#123;</span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(staticPathPattern)</span><br><span class="line">                                             .addResourceLocations(getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations()))</span><br><span class="line">                                             .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置欢迎页</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> WelcomePageHandlerMapping <span class="title">welcomePageHandlerMapping</span><span class="params">(ApplicationContext applicationContext,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                           FormattingConversionService mvcConversionService, ResourceUrlProvider mvcResourceUrlProvider)</span> </span>&#123;</span><br><span class="line">    WelcomePageHandlerMapping welcomePageHandlerMapping = <span class="keyword">new</span> WelcomePageHandlerMapping(</span><br><span class="line">        <span class="keyword">new</span> TemplateAvailabilityProviders(applicationContext), applicationContext, getWelcomePage(),</span><br><span class="line">        <span class="keyword">this</span>.mvcProperties.getStaticPathPattern());</span><br><span class="line">    welcomePageHandlerMapping.setInterceptors(getInterceptors(mvcConversionService, mvcResourceUrlProvider));</span><br><span class="line">    welcomePageHandlerMapping.setCorsConfigurations(getCorsConfigurations());</span><br><span class="line">    <span class="keyword">return</span> welcomePageHandlerMapping;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
+<a id="more"></a>
 
 <p><strong>所有的<code>/webjars/</code>，都去<code>classpath:/META-INF/resources/webjars/</code>找资源</strong></p>
 <p><code>webjars</code>：以jar包的方式引入静态资源</p>
@@ -262,18 +527,29 @@
     <title>Spring Boot日志</title>
     <url>/blog/2020/08/22/Spring-Boot%E6%97%A5%E5%BF%97/</url>
     <content><![CDATA[<h1 id="日志框架的分类与选择"><a href="#日志框架的分类与选择" class="headerlink" title="日志框架的分类与选择"></a>日志框架的分类与选择</h1><p><strong>常见的日志门面</strong></p>
-<p>JCL（Jakarta Commons Logging）</p>
-<p>SLF4j（Simple Logging Facade for Java）</p>
-<p>jboss-logging</p>
-<a id="more"></a>
-
+<ul>
+<li><p>JCL（Jakarta Commons Logging）</p>
+</li>
+<li><p>SLF4j（Simple Logging Facade for Java）</p>
+</li>
+<li><p>jboss-logging</p>
+</li>
+</ul>
 <p><strong>常见的日志实现</strong></p>
-<p>Log4j</p>
-<p>JUL（java.util.logging）</p>
-<p>log4j2</p>
-<p>Logback</p>
+<ul>
+<li><p>Log4j</p>
+</li>
+<li><p>JUL（java.util.logging）</p>
+</li>
+<li><p>log4j2</p>
+</li>
+<li><p>Logback</p>
+</li>
+</ul>
 <p><strong>日志框架选择</strong></p>
 <p>Spring Boot在框架内容部使用JCL，spring-boot-starter-logging采用了==slf4j + logback==的形式，Spring Boot也能自动适配（JUL、Log4j2、logback）并简化配置。</p>
+<a id="more"></a>
+
 <h1 id="SLF4j使用原理"><a href="#SLF4j使用原理" class="headerlink" title="SLF4j使用原理"></a>SLF4j使用原理</h1><p><strong>如何在系统中使用SLF4j</strong></p>
 <p>在开发的时候，日志记录方法的调用，不应该直接调用日志的实现类，而是调用日志抽象层里面的方法。</p>
 <p>给系统导入slf4j和logback的jar包</p>
@@ -406,18 +682,14 @@
 
 <p>配置文件的作用：修改Spring Boot自动配置的默认值。</p>
 <p><code>.yml</code>是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件。</p>
+<h1 id="YAML语法"><a href="#YAML语法" class="headerlink" title="YAML语法"></a>YAML语法</h1><h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><ul>
+<li>使用缩进表示层级关系</li>
+<li>缩进时不允许使用Tab键，只允许只用空格</li>
+<li>缩进的空格数目不重要，只要相同层级的元素左对齐即可</li>
+<li>大小写敏感</li>
+</ul>
 <a id="more"></a>
 
-<h1 id="YAML语法"><a href="#YAML语法" class="headerlink" title="YAML语法"></a>YAML语法</h1><h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><ul>
-<li><p>使用缩进表示层级关系</p>
-</li>
-<li><p>缩进时不允许使用Tab键，只允许只用空格</p>
-</li>
-<li><p>缩进的空格数目不重要，只要相同层级的元素左对齐即可</p>
-</li>
-<li><p>大小写敏感</p>
-</li>
-</ul>
 <h2 id="支持的数据结构"><a href="#支持的数据结构" class="headerlink" title="支持的数据结构"></a>支持的数据结构</h2><p><strong>对象（属性和值）：健值对的集合</strong></p>
 <figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">friends:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">tom</span></span><br><span class="line">    <span class="attr">age:</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
 

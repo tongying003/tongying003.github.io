@@ -24,9 +24,9 @@
 
   <meta name="description" content="记录，思考并解决问题">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Coffe Time">
+<meta property="og:title">
 <meta property="og:url" content="https://tongying003.gitee.io/blog/index.html">
-<meta property="og:site_name" content="Coffe Time">
+<meta property="og:site_name">
 <meta property="og:description" content="记录，思考并解决问题">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="TongYing">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>Coffe Time</title>
+  <title></title>
   
 
 
@@ -110,7 +110,7 @@
 
     <a href="/blog/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Coffe Time</h1>
+      <h1 class="site-title"></h1>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Enjoy coding</p>
@@ -223,20 +223,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/blog/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/blog/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/blog/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -273,6 +273,185 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tongying003.gitee.io/blog/2020/09/03/Spring-Boot%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/CameraGirl.jpeg">
+      <meta itemprop="name" content="TongYing">
+      <meta itemprop="description" content="记录，思考并解决问题">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2020/09/03/Spring-Boot%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/" class="post-title-link" itemprop="url">Spring Boot与数据访问</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-03 23:50:24" itemprop="dateCreated datePublished" datetime="2020-09-03T23:50:24+08:00">2020-09-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-04 01:16:37" itemprop="dateModified" datetime="2020-09-04T01:16:37+08:00">2020-09-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Spring-Boot%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Spring Boot基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="JDBC"><a href="#JDBC" class="headerlink" title="JDBC"></a>JDBC</h1><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>数据源配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://47.107.230.85/jdbc</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<p>​        默认使用com.zaxxer.hikari.HikariDataSource作为数据源</p>
+<p>​        数据源相关配置在<strong>DataSourceProperties</strong>中</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/blog/2020/09/03/Spring-Boot%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tongying003.gitee.io/blog/2020/09/03/Docker%E5%88%9D%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/CameraGirl.jpeg">
+      <meta itemprop="name" content="TongYing">
+      <meta itemprop="description" content="记录，思考并解决问题">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2020/09/03/Docker%E5%88%9D%E8%AF%86/" class="post-title-link" itemprop="url">Docker初识</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-03 23:38:16" itemprop="dateCreated datePublished" datetime="2020-09-03T23:38:16+08:00">2020-09-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-04 01:16:37" itemprop="dateModified" datetime="2020-09-04T01:16:37+08:00">2020-09-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Docker是一个开源的应用容器引擎</p>
+<p>Docker支持将软件编译成一个镜像，然后在镜像中各种软件做好配置，将镜像发布出去，其他使用者可以直接使用这个镜像</p>
+<p>运行中的这个镜像称为容器，容器启动是非常快速的</p>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200903234429.svg" alt="Docker"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/blog/2020/09/03/Docker%E5%88%9D%E8%AF%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://tongying003.gitee.io/blog/2020/08/22/Spring-Boot%E4%B9%8BWeb%E5%BC%80%E5%8F%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +461,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coffe Time">
+      <meta itemprop="name" content="">
     </span>
 
     
@@ -307,7 +486,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-04 00:32:48" itemprop="dateModified" datetime="2020-09-04T00:32:48+08:00">2020-09-04</time>
+                <time title="修改时间：2020-09-04 01:16:37" itemprop="dateModified" datetime="2020-09-04T01:16:37+08:00">2020-09-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -329,6 +508,8 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="静态资源的映射规则"><a href="#静态资源的映射规则" class="headerlink" title="静态资源的映射规则"></a>静态资源的映射规则</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以设置和静态资源有关的参数，缓存时间等</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;spring.resources&quot;, ignoreUnknownFields = false)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResourceProperties</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 配置webjars</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.resourceProperties.isAddMappings()) &#123;</span><br><span class="line">        logger.debug(<span class="string">&quot;Default resource handling disabled&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Duration cachePeriod = <span class="keyword">this</span>.resourceProperties.getCache().getPeriod();</span><br><span class="line">    CacheControl cacheControl = <span class="keyword">this</span>.resourceProperties.getCache().getCachecontrol().toHttpCacheControl();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(<span class="string">&quot;/webjars/**&quot;</span>)) &#123;</span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(<span class="string">&quot;/webjars/**&quot;</span>)</span><br><span class="line">                                             .addResourceLocations(<span class="string">&quot;classpath:/META-INF/resources/webjars/&quot;</span>)</span><br><span class="line">                                             .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">    String staticPathPattern = <span class="keyword">this</span>.mvcProperties.getStaticPathPattern();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(staticPathPattern)) &#123;</span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(staticPathPattern)</span><br><span class="line">                                             .addResourceLocations(getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations()))</span><br><span class="line">                                             .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置欢迎页</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> WelcomePageHandlerMapping <span class="title">welcomePageHandlerMapping</span><span class="params">(ApplicationContext applicationContext,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                           FormattingConversionService mvcConversionService, ResourceUrlProvider mvcResourceUrlProvider)</span> </span>&#123;</span><br><span class="line">    WelcomePageHandlerMapping welcomePageHandlerMapping = <span class="keyword">new</span> WelcomePageHandlerMapping(</span><br><span class="line">        <span class="keyword">new</span> TemplateAvailabilityProviders(applicationContext), applicationContext, getWelcomePage(),</span><br><span class="line">        <span class="keyword">this</span>.mvcProperties.getStaticPathPattern());</span><br><span class="line">    welcomePageHandlerMapping.setInterceptors(getInterceptors(mvcConversionService, mvcResourceUrlProvider));</span><br><span class="line">    welcomePageHandlerMapping.setCorsConfigurations(getCorsConfigurations());</span><br><span class="line">    <span class="keyword">return</span> welcomePageHandlerMapping;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/blog/2020/08/22/Spring-Boot%E4%B9%8BWeb%E5%BC%80%E5%8F%91/#more" rel="contents">
@@ -366,7 +547,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coffe Time">
+      <meta itemprop="name" content="">
     </span>
 
     
@@ -391,7 +572,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-04 00:32:48" itemprop="dateModified" datetime="2020-09-04T00:32:48+08:00">2020-09-04</time>
+                <time title="修改时间：2020-09-04 01:16:37" itemprop="dateModified" datetime="2020-09-04T01:16:37+08:00">2020-09-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -413,9 +594,27 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="日志框架的分类与选择"><a href="#日志框架的分类与选择" class="headerlink" title="日志框架的分类与选择"></a>日志框架的分类与选择</h1><p><strong>常见的日志门面</strong></p>
-<p>JCL（Jakarta Commons Logging）</p>
-<p>SLF4j（Simple Logging Facade for Java）</p>
-<p>jboss-logging</p>
+<ul>
+<li><p>JCL（Jakarta Commons Logging）</p>
+</li>
+<li><p>SLF4j（Simple Logging Facade for Java）</p>
+</li>
+<li><p>jboss-logging</p>
+</li>
+</ul>
+<p><strong>常见的日志实现</strong></p>
+<ul>
+<li><p>Log4j</p>
+</li>
+<li><p>JUL（java.util.logging）</p>
+</li>
+<li><p>log4j2</p>
+</li>
+<li><p>Logback</p>
+</li>
+</ul>
+<p><strong>日志框架选择</strong></p>
+<p>Spring Boot在框架内容部使用JCL，spring-boot-starter-logging采用了==slf4j + logback==的形式，Spring Boot也能自动适配（JUL、Log4j2、logback）并简化配置。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/blog/2020/08/22/Spring-Boot%E6%97%A5%E5%BF%97/#more" rel="contents">
@@ -453,7 +652,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coffe Time">
+      <meta itemprop="name" content="">
     </span>
 
     
@@ -478,7 +677,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-04 00:32:48" itemprop="dateModified" datetime="2020-09-04T00:32:48+08:00">2020-09-04</time>
+                <time title="修改时间：2020-09-04 01:16:37" itemprop="dateModified" datetime="2020-09-04T01:16:37+08:00">2020-09-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -504,6 +703,12 @@
 
 <p>配置文件的作用：修改Spring Boot自动配置的默认值。</p>
 <p><code>.yml</code>是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件。</p>
+<h1 id="YAML语法"><a href="#YAML语法" class="headerlink" title="YAML语法"></a>YAML语法</h1><h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><ul>
+<li>使用缩进表示层级关系</li>
+<li>缩进时不允许使用Tab键，只允许只用空格</li>
+<li>缩进的空格数目不重要，只要相同层级的元素左对齐即可</li>
+<li>大小写敏感</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/blog/2020/08/21/Spring-Boot%E9%85%8D%E7%BD%AE/#more" rel="contents">
@@ -541,7 +746,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coffe Time">
+      <meta itemprop="name" content="">
     </span>
 
     
@@ -566,7 +771,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-04 00:32:48" itemprop="dateModified" datetime="2020-09-04T00:32:48+08:00">2020-09-04</time>
+                <time title="修改时间：2020-09-04 01:16:37" itemprop="dateModified" datetime="2020-09-04T01:16:37+08:00">2020-09-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
