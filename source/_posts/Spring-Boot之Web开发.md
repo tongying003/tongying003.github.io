@@ -18,8 +18,6 @@ tags:
 public class ResourceProperties {
 ```
 
-<!-- more -->
-
 ```java
 // 配置webjars
 @Override
@@ -56,7 +54,7 @@ public WelcomePageHandlerMapping welcomePageHandlerMapping(ApplicationContext ap
 }
 ```
 
-
+<!-- more -->
 
 **所有的`/webjars/`，都去`classpath:/META-INF/resources/webjars/`找资源**
 

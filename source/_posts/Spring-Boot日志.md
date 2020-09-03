@@ -12,27 +12,27 @@ tags:
 
 **常见的日志门面**
 
-JCL（Jakarta Commons Logging）
+- JCL（Jakarta Commons Logging）
 
-SLF4j（Simple Logging Facade for Java）
+- SLF4j（Simple Logging Facade for Java）
 
-jboss-logging
-
-<!-- more -->
+- jboss-logging
 
 **常见的日志实现**
 
-Log4j
+- Log4j
 
-JUL（java.util.logging）
+- JUL（java.util.logging）
 
-log4j2
+- log4j2
 
-Logback
+- Logback
 
 **日志框架选择**
 
 Spring Boot在框架内容部使用JCL，spring-boot-starter-logging采用了==slf4j + logback==的形式，Spring Boot也能自动适配（JUL、Log4j2、logback）并简化配置。
+
+<!-- more -->
 
 # SLF4j使用原理
 

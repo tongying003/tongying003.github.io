@@ -21,19 +21,16 @@ application.yml
 
 `.yml`是YAML（YAML Ain’t Markup Language）语言的文件，以数据为中心，比json、xml等更适合做配置文件。
 
-<!-- more -->
-
 # YAML语法
 
 ## 基本语法
 
 - 使用缩进表示层级关系
-
 - 缩进时不允许使用Tab键，只允许只用空格
-
 - 缩进的空格数目不重要，只要相同层级的元素左对齐即可
-
 - 大小写敏感
+
+<!-- more -->
 
 ## 支持的数据结构
 
