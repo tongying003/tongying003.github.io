@@ -524,6 +524,25 @@
       </tags>
   </entry>
   <entry>
+    <title>Spring Boot和Spring Cloud版本选型</title>
+    <url>/blog/2020/09/21/Spring-Boot%E5%92%8CSpring-Cloud%E7%89%88%E6%9C%AC%E9%80%89%E5%9E%8B/</url>
+    <content><![CDATA[<h1 id="Spring-Cloud版本兼容性概览"><a href="#Spring-Cloud版本兼容性概览" class="headerlink" title="Spring Cloud版本兼容性概览"></a>Spring Cloud版本兼容性概览</h1><p><a href="https://spring.io/projects/spring-cloud/#overview"><strong>Release train Spring Boot compatibility</strong></a></p>
+<h1 id="详细版本对应关系查看方法"><a href="#详细版本对应关系查看方法" class="headerlink" title="详细版本对应关系查看方法"></a>详细版本对应关系查看方法</h1><p><a href="https://start.spring.io/actuator/info"><strong>Release train Spring Boot compare detail</strong></a></p>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><ol>
+<li>只用Spring Boot，直接使用最新版</li>
+<li>同时用Spring Boot和Spring Cloud，由Spring Cloud决定Spring Boot的版本，详情见Spring Cloud <code>Reference Doc.</code></li>
+</ol>
+<p><img src="https://gitee.com/tongying003/MapDapot/raw/master/img/20200922004552.png" alt="image-20200922004552788"></p>
+]]></content>
+      <categories>
+        <category>Spring Cloud</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Spring Cloud</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring Boot日志</title>
     <url>/blog/2020/08/22/Spring-Boot%E6%97%A5%E5%BF%97/</url>
     <content><![CDATA[<h1 id="日志框架的分类与选择"><a href="#日志框架的分类与选择" class="headerlink" title="日志框架的分类与选择"></a>日志框架的分类与选择</h1><p><strong>常见的日志门面</strong></p>
